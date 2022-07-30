@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { ReactElement } from "react";
+import styled from '@emotion/styled';
+import { ReactElement } from 'react';
 
 const Main = ({ children }: { children: ReactElement }) => {
   return <Container>{children}</Container>;

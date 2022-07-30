@@ -6,13 +6,15 @@ import { FallbackError } from 'components/FallbackError';
 import { ErrorBoundary } from 'components/ErrorBoundary';
 
 function App() {
-	const { user } = useAuth();
+  const { user } = useAuth();
 
-	return (
-		<div className='App'>
-			<ErrorBoundary fallbackRender={FallbackError}>{user ? <MainPage /> : <AuthPage />}</ErrorBoundary>
-		</div>
-	);
+  return (
+    <div className="App">
+      <ErrorBoundary fallbackRender={FallbackError}>
+        {user ? <MainPage /> : <AuthPage />}
+      </ErrorBoundary>
+    </div>
+  );
 }
 
 export default App;

@@ -9,45 +9,58 @@ import { Loading } from 'components/Loading';
 import { FallbackError } from 'components/FallbackError';
 
 const bootstrapUser = async () => {
-	let user = null;
-	const token = auth.getToken();
-	if (token) {
-		const data = await http('me', { token });
-		user = data.user;
-	}
-	return user;
+  let user = null;
+  const token = auth.getToken();
+  if (token) {
+    const data = await http('me', { token });
+    user = data.user;
+  }
+  return user;
 };
 
 export const AuthContext = React.createContext<
-	| {
-			user: User | null;
-			login: (form: AuthForm) => Promise<void>;
-			register: (format: AuthForm) => Promise<void>;
-			logout: () => Promise<void>;
-	  }
-	| undefined
+  | {
+      user: User | null;
+      login: (form: AuthForm) => Promise<void>;
+      register: (format: AuthForm) => Promise<void>;
+      logout: () => Promise<void>;
+    }
+  | undefined
 >(undefined);
 AuthContext.displayName = 'AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const { data: user, error, isLoading, isIdle, isError, run, setData: setUser } = useAsync<User | null>();
+  const {
+    data: user,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    run,
+    setData: setUser
+  } = useAsync<User | null>();
 
-	const login = (form: AuthForm) => auth.login(form).then(setUser);
-	const register = (format: AuthForm) => auth.register(format).then(setUser);
-	const logout = () => auth.logout().then(() => setUser(null));
+  const login = (form: AuthForm) => auth.login(form).then(setUser);
+  const register = (format: AuthForm) => auth.register(format).then(setUser);
+  const logout = () => auth.logout().then(() => setUser(null));
 
-	useEffect(() => {
-		run(bootstrapUser());
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+  useEffect(() => {
+    run(bootstrapUser());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-	if (isIdle || isLoading) {
-		return <Loading />;
-	}
+  if (isIdle || isLoading) {
+    return <Loading />;
+  }
 
-	if (isError) {
-		return <FallbackError error={error || null} />;
-	}
+  if (isError) {
+    return <FallbackError error={error || null} />;
+  }
 
-	return <AuthContext.Provider children={children} value={{ user, login, register, logout }} />;
+  return (
+    <AuthContext.Provider
+      children={children}
+      value={{ user, login, register, logout }}
+    />
+  );
 };
