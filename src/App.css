@@ -1,0 +1,11 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  box-sizing: border-box;
+}
+
+html body #root .App {
+  min-height: 100vh;
+}
