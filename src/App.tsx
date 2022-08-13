@@ -1,9 +1,9 @@
 import './App.css';
-import { useAuth } from 'hooks/useAuth';
-import MainPage from 'pages/MainPage';
-import AuthPage from 'pages/AuthPage';
 import { FallbackError } from 'components/FallbackError';
 import { ErrorBoundary } from 'components/ErrorBoundary';
+import MainPage from 'pages/MainPage';
+import AuthPage from 'pages/AuthPage';
+import { useAuth } from 'hooks/useAuth';
 
 function App() {
   const { user } = useAuth();
