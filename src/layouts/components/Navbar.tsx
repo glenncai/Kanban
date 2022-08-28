@@ -13,11 +13,6 @@ const Navbar = () => {
       key: 'logout',
       label: 'Logout',
       onClick: logout
-    },
-    {
-      key: 'setting',
-      label: 'Setting',
-      onClick: logout
     }
   ];
 

@@ -11,9 +11,6 @@ export const FallbackError = ({ error }: { error: Error | null }) => {
       <Typography.Title level={3} type="danger">
         {error?.message}
       </Typography.Title>
-      <Typography.Title level={3} type="danger">
-        Please try to contact support.
-      </Typography.Title>
     </Container>
   );
 };
