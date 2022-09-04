@@ -6,17 +6,14 @@ import { Typography } from 'antd';
 import { useProjects } from 'utils/project';
 import { useUsers } from 'utils/user';
 import { useTitle } from 'hooks/useTitle';
-import { useUrlQueryParam } from 'hooks/useUrlQueryParam';
+import { useProjectSearchParams } from './hooks/useProjectSearchParams';
 
 const ProjectList = () => {
   useTitle('Jira Software | Project');
 
-  const [param, setParam] = useUrlQueryParam(['name', 'personId']);
-  const debouncedParam = useDebounce(param, 500);
-  const { data: list, error, isLoading } = useProjects(debouncedParam);
+  const [param, setParam] = useProjectSearchParams();
+  const { data: list, error, isLoading } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
-
-  console.log('Param: ', param);
 
   return (
     <Container>
@@ -30,7 +27,7 @@ const ProjectList = () => {
   );
 };
 
-ProjectList.whyDidYouRender = true;
+ProjectList.whyDidYouRender = false;
 
 const Container = styled.div`
   padding: 3.2rem;

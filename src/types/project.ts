@@ -1,17 +1,17 @@
 export interface User {
-	id: string;
-	name: string;
-	email: string;
-	title: string;
-	organization: string;
-	token: string;
+  id: number;
+  name: string;
+  email: string;
+  title: string;
+  organization: string;
+  token: string;
 }
 
 export interface Project {
-	id: string;
-	name: string;
-	personId: string;
-	pin: boolean;
-	organization: string;
-	created: number;
+  id: number;
+  name: string;
+  personId: number;
+  pin: boolean;
+  organization: string;
+  created: number;
 }

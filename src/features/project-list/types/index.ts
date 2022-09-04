@@ -3,14 +3,11 @@ import { User } from 'types/project';
 import { Project } from 'types/project';
 
 export interface ListProps extends TableProps<Project> {
-	users: User[];
+  users: User[];
 }
 
 export interface SearchPanelProps {
-	users: User[];
-	param: {
-		name: string;
-		personId: string;
-	};
-	setParam: (param: SearchPanelProps['param']) => void;
+  users: User[];
+  param: Partial<Pick<Project, 'name' | 'personId'>>;
+  setParam: (param: SearchPanelProps['param']) => void;
 }

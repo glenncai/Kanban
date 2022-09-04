@@ -1,11 +1,10 @@
-import { Input, Select, Form } from 'antd';
+import { Input, Form } from 'antd';
 import { ChangeEvent } from 'react';
 import { SearchPanelProps } from '../types';
+import { UserSelector } from 'components/UserSelector';
 import styled from '@emotion/styled';
 
-const SearchPanel = ({ users, param, setParam }: SearchPanelProps) => {
-  console.log('Users: ', users);
-
+const SearchPanel = ({ param, setParam }: SearchPanelProps) => {
   return (
     <SearchForm layout="inline">
       <Form.Item>
@@ -22,28 +21,22 @@ const SearchPanel = ({ users, param, setParam }: SearchPanelProps) => {
         />
       </Form.Item>
       <Form.Item>
-        <Select
+        <UserSelector
           showSearch
           filterOption={(input, option) =>
             (option!.children as unknown as string)
               .toLowerCase()
               .includes(input.toLowerCase())
           }
+          defaultOptionName="負責人"
           value={param.personId}
-          onChange={(value: string) =>
+          onChange={(value) =>
             setParam({
               ...param,
               personId: value
             })
           }
-        >
-          <Select.Option value={''}>Manager</Select.Option>
-          {users.map((user) => (
-            <Select.Option key={user.id} value={user.id.toString()}>
-              {user.name}
-            </Select.Option>
-          ))}
-        </Select>
+        />
       </Form.Item>
     </SearchForm>
   );
