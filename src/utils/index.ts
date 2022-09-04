@@ -17,3 +17,6 @@ export const cleanObject = (obj: { [key: string]: unknown }) => {
 };
 
 export const resetRoute = () => (window.location.href = window.location.origin);
+
+export const toNumber = (value: unknown) =>
+  isNaN(Number(value)) ? 0 : Number(value);
