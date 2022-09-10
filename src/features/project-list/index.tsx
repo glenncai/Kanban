@@ -12,7 +12,12 @@ const ProjectList = () => {
   useTitle('Jira Software | Project');
 
   const [param, setParam] = useProjectSearchParams();
-  const { data: list, error, isLoading } = useProjects(useDebounce(param, 500));
+  const {
+    data: list,
+    error,
+    isLoading,
+    retry
+  } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
 
   return (
@@ -22,7 +27,12 @@ const ProjectList = () => {
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       ) : null}
-      <List users={users || []} dataSource={list || []} loading={isLoading} />
+      <List
+        refresh={retry}
+        users={users || []}
+        dataSource={list || []}
+        loading={isLoading}
+      />
     </Container>
   );
 };

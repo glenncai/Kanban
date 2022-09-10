@@ -2,12 +2,29 @@ import { ListProps } from '../types';
 import { Table } from 'antd';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
+import { Pin } from 'components/Pin';
+import { useEditProject } from 'utils/project';
 
 const List = ({ users, ...props }: ListProps) => {
+  const { mutate } = useEditProject();
+  const pinProject = (id: number) => (pin: boolean) =>
+    mutate({ id, pin }).then(props.refresh);
+
   return (
     <Table
       rowKey={'id'}
       columns={[
+        {
+          title: <Pin checked={true} disabled={true} />,
+          render(value, project) {
+            return (
+              <Pin
+                checked={project.pin}
+                onCheckedChange={pinProject(project.id)}
+              />
+            );
+          }
+        },
         {
           title: 'Title',
           sorter: (a, b) => a.name.localeCompare(b.name),

@@ -26,6 +26,8 @@ export const useAsync = <D>(
     ...initialState
   });
 
+  const [retry, setRetry] = useState(() => () => {});
+
   const setData = (data: D) =>
     setState({
       data,
@@ -41,10 +43,16 @@ export const useAsync = <D>(
     });
 
   // Trigger async request
-  const run = (promise: Promise<D>) => {
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error('Make sure that parameter is Promise type.');
     }
+    setRetry(() => () => {
+      runConfig?.retry && run(runConfig?.retry(), runConfig);
+    });
     setState({ ...state, status: 'loading' });
     return promise
       .then((data) => {
@@ -67,6 +75,7 @@ export const useAsync = <D>(
     isError: state.status === 'error',
     isSuccess: state.status === 'success',
     run,
+    retry,
     setData,
     setError,
     ...state
