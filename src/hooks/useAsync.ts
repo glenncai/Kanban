@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useMountedRef } from 'hooks/useMountedRef';
 
 interface State<D> {
@@ -22,55 +22,61 @@ export const useAsync = <D>(
   initialConfig?: typeof defaultConfig
 ) => {
   const config = { ...defaultConfig, ...initialConfig };
+  const mountedRef = useMountedRef();
   const [state, setState] = useState<State<D>>({
     ...defaultInitialState,
     ...initialState
   });
-  const mountedRef = useMountedRef();
 
   // Store a function
   const [retry, setRetry] = useState(() => () => {});
 
-  const setData = (data: D) =>
-    setState({
-      data,
-      status: 'success',
-      error: null
-    });
+  const setData = useCallback(
+    (data: D) =>
+      setState({
+        data,
+        status: 'success',
+        error: null
+      }),
+    []
+  );
 
-  const setError = (error: Error) =>
-    setState({
-      error,
-      data: null,
-      status: 'error'
-    });
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        data: null,
+        status: 'error'
+      }),
+    []
+  );
 
   // Trigger async request
-  const run = (
-    promise: Promise<D>,
-    runConfig?: { retry: () => Promise<D> }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error('Make sure that parameter is Promise type.');
-    }
-    setRetry(() => () => {
-      runConfig?.retry && run(runConfig?.retry(), runConfig);
-    });
-    setState({ ...state, status: 'loading' });
-    return promise
-      .then((data) => {
-        mountedRef() && setData(data);
-        return data;
-      })
-      .catch((error) => {
-        setError(error);
-        if (config.throwOnError) {
-          // Return Promise to wait another catch to throw error
-          return Promise.reject(error);
-        }
-        return error;
+  const run = useCallback(
+    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
+      if (!promise || !promise.then) {
+        throw new Error('Make sure that parameter is Promise type.');
+      }
+      setRetry(() => () => {
+        runConfig?.retry && run(runConfig?.retry(), runConfig);
       });
-  };
+      setState((prevState) => ({ ...prevState, status: 'loading' }));
+      return promise
+        .then((data) => {
+          mountedRef() && setData(data);
+          return data;
+        })
+        .catch((error) => {
+          setError(error);
+          if (config.throwOnError) {
+            // Return Promise to wait another catch to throw error
+            return Promise.reject(error);
+          }
+          return error;
+        });
+    },
+    [config.throwOnError, mountedRef, setData, setError]
+  );
 
   return {
     isIdle: state.status === 'idle',
