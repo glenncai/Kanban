@@ -1,14 +1,21 @@
+import { ReactElement, useState } from 'react';
 import Navbar from './components/Navbar';
 import Main from './components/Main';
-import { ReactElement } from 'react';
+import { ProjectModal } from 'components/ProjectModal';
 
 const Layout = ({ children }: { children: ReactElement }) => {
-	return (
-		<>
-			<Navbar />
-			<Main>{children}</Main>
-		</>
-	);
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
+
+  return (
+    <>
+      <ProjectModal
+        projectModalOpen={projectModalOpen}
+        onClose={() => setProjectModalOpen(false)}
+      ></ProjectModal>
+      <Navbar setProjectModalOpen={setProjectModalOpen} />
+      <Main>{children}</Main>
+    </>
+  );
 };
 
 export default Layout;

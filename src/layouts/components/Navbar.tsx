@@ -3,9 +3,42 @@ import { Row } from 'lib/custom';
 import { useAuth } from 'hooks/useAuth';
 import { resetRoute } from 'utils';
 import { ReactComponent as Logo } from 'assets/logo.svg';
-import { Dropdown, Menu, Button } from 'antd';
+import { Dropdown, Menu, Button, Typography } from 'antd';
+import { ProjectPopOver } from 'components/ProjectPopOver';
 
-const Navbar = () => {
+const Navbar = (props: { setProjectModalOpen: (isOpen: boolean) => void }) => {
+  return (
+    <Header between={true}>
+      <HeaderLeft gap={true}>
+        <NavbarList setProjectModalOpen={props.setProjectModalOpen} />
+      </HeaderLeft>
+      <HeaderRight>
+        <NavbarUser />
+      </HeaderRight>
+    </Header>
+  );
+};
+
+const NavbarList = (props: {
+  setProjectModalOpen: (isOpen: boolean) => void;
+}) => {
+  return (
+    <>
+      <LogoButton onClick={resetRoute}>
+        <Logo
+          title="Jira Software"
+          width="55"
+          height="70"
+          viewBox="0 0 70 55"
+        />
+      </LogoButton>
+      <NavTitle>Users</NavTitle>
+      <ProjectPopOver setProjectModalOpen={props.setProjectModalOpen} />
+    </>
+  );
+};
+
+const NavbarUser = () => {
   const { logout, user } = useAuth();
 
   const menuItems = [
@@ -17,27 +50,13 @@ const Navbar = () => {
   ];
 
   return (
-    <Header between={true}>
-      <HeaderLeft gap={true}>
-        <LogoButton onClick={resetRoute}>
-          <Logo
-            title="Jira Software"
-            width="55"
-            height="70"
-            viewBox="0 0 70 55"
-          />
-        </LogoButton>
-        <h2>Projects</h2>
-        <h2>Users</h2>
-      </HeaderLeft>
-      <HeaderRight>
-        <Dropdown overlay={<Menu items={menuItems} />} trigger={['click']}>
-          <ButtonRight type="link" onClick={(e) => e.preventDefault()}>
-            Hi, {user?.name}
-          </ButtonRight>
-        </Dropdown>
-      </HeaderRight>
-    </Header>
+    <>
+      <Dropdown overlay={<Menu items={menuItems} />} trigger={['click']}>
+        <ButtonRight type="link" onClick={(e) => e.preventDefault()}>
+          Hi, {user?.name}
+        </ButtonRight>
+      </Dropdown>
+    </>
   );
 };
 
@@ -56,6 +75,11 @@ const ButtonRight = styled(Button)`
 `;
 
 const LogoButton = styled.span`
+  cursor: pointer;
+`;
+
+export const NavTitle = styled(Typography.Text)`
+  font-size: 2.5rem;
   cursor: pointer;
 `;
 
