@@ -6,11 +6,11 @@ import { ReactComponent as Logo } from 'assets/logo.svg';
 import { Dropdown, Menu, Button, Typography } from 'antd';
 import { ProjectPopOver } from 'components/ProjectPopOver';
 
-const Navbar = (props: { setProjectModalOpen: (isOpen: boolean) => void }) => {
+const Navbar = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
-        <NavbarList setProjectModalOpen={props.setProjectModalOpen} />
+        <NavbarList />
       </HeaderLeft>
       <HeaderRight>
         <NavbarUser />
@@ -19,9 +19,7 @@ const Navbar = (props: { setProjectModalOpen: (isOpen: boolean) => void }) => {
   );
 };
 
-const NavbarList = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
+const NavbarList = () => {
   return (
     <>
       <LogoButton onClick={resetRoute}>
@@ -33,7 +31,7 @@ const NavbarList = (props: {
         />
       </LogoButton>
       <NavTitle>Users</NavTitle>
-      <ProjectPopOver setProjectModalOpen={props.setProjectModalOpen} />
+      <ProjectPopOver />
     </>
   );
 };

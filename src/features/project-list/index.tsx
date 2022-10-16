@@ -8,10 +8,13 @@ import { useProjects } from 'utils/project';
 import { useUsers } from 'utils/user';
 import { useTitle } from 'hooks/useTitle';
 import { useProjectSearchParams } from './hooks/useProjectSearchParams';
+import { useDispatch } from 'react-redux';
+import { projectListActons } from 'features/project-list/slices/index';
 
 const ProjectList = () => {
   useTitle('Jira Software | Project');
 
+  const dispatch = useDispatch();
   const [param, setParam] = useProjectSearchParams();
   const {
     data: list,
@@ -29,7 +32,9 @@ const ProjectList = () => {
         {error ? (
           <Typography.Text type="danger">{error.message}</Typography.Text>
         ) : null}
-        <Button>Create New Project</Button>
+        <Button onClick={() => dispatch(projectListActons.openProjectModal())}>
+          Create New Project
+        </Button>
       </Row>
       <List
         refresh={retry}
