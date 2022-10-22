@@ -2,11 +2,10 @@ import { Button, Divider, List, Popover, Typography } from 'antd';
 import { useProjects } from 'utils/project';
 import { NavTitle } from 'layouts/components/Navbar';
 import styled from '@emotion/styled';
-import { useDispatch } from 'react-redux';
-import { projectListActons } from 'features/project-list/slices';
+import { useProjectModal } from 'features/project-list/hooks/useProjectModal';
 
 export const ProjectPopOver = () => {
-  const dispatch = useDispatch();
+  const { open } = useProjectModal();
   const { data: projects } = useProjects();
   const pinnedProjects = projects?.filter((project) => project.pin);
 
@@ -21,10 +20,7 @@ export const ProjectPopOver = () => {
         ))}
       </List>
       <Divider />
-      <CreateProjectButton
-        type="link"
-        onClick={() => dispatch(projectListActons.openProjectModal())}
-      >
+      <CreateProjectButton type="link" onClick={open}>
         Create Project
       </CreateProjectButton>
     </ContentContainer>

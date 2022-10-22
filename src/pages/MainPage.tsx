@@ -5,15 +5,15 @@ import Project from 'features/project';
 
 const MainPage = () => {
   return (
-    <Layout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Layout>
         <Routes>
           <Route index element={<Navigate replace={true} to="projects" />} />
           <Route path="projects" element={<ProjectList />} />
           <Route path="projects/:projectId/*" element={<Project />} />
         </Routes>
-      </BrowserRouter>
-    </Layout>
+      </Layout>
+    </BrowserRouter>
   );
 };
 

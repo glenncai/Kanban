@@ -6,11 +6,10 @@ import { Link } from 'react-router-dom';
 import { Pin } from 'components/Pin';
 import { useEditProject } from 'utils/project';
 import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
-import { projectListActons } from '../slices';
+import { useProjectModal } from '../hooks/useProjectModal';
 
 const List = ({ users, ...props }: ListProps) => {
-  const dispatch = useDispatch();
+  const { open } = useProjectModal();
   const { mutate } = useEditProject();
   const pinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh);
@@ -20,7 +19,7 @@ const List = ({ users, ...props }: ListProps) => {
       key: 'edit',
       label: <ButtonItem type="link">Edit</ButtonItem>,
       icon: <EditOutlinedIcon />,
-      onClick: () => dispatch(projectListActons.openProjectModal())
+      onClick: open
     },
     {
       key: 'delete',
