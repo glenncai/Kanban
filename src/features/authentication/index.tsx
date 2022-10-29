@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import Login from './components/Login';
 import Register from './components/Register';
-import { Button, Card, Divider, Typography } from 'antd';
+import { Button, Card, Divider } from 'antd';
+import { ErrorBox } from 'components/ErrorBox';
 import styled from '@emotion/styled';
 import centerLogo from 'assets/center.svg';
 import leftLogo from 'assets/left.svg';
@@ -24,9 +25,7 @@ const AuthForm = () => {
         <Title>
           {isRegister ? 'Register new account' : 'Log in to your account'}
         </Title>
-        {error ? (
-          <Typography.Text type="danger">{error.message}</Typography.Text>
-        ) : null}
+        {error ? <ErrorBox error={error} type={'TEXT'} /> : null}
         {isRegister ? (
           <Register onError={setError} />
         ) : (

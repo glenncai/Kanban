@@ -7,22 +7,26 @@ import { Pin } from 'components/Pin';
 import { useEditProject } from 'utils/project';
 import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
 import { useProjectModal } from '../hooks/useProjectModal';
+import type { MenuProps } from 'antd';
 
 const List = ({ users, ...props }: ListProps) => {
-  const { open } = useProjectModal();
   const { mutate } = useEditProject();
-  const pinProject = (id: number) => (pin: boolean) =>
-    mutate({ id, pin }).then(props.refresh);
+  const { startEdit } = useProjectModal();
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
 
-  const menuItems = [
+  class Constants {
+    public static readonly EDIT: string = 'EDIT';
+    public static readonly DELETE: string = 'DELETE';
+  }
+
+  const menuItems: MenuProps['items'] = [
     {
-      key: 'edit',
+      key: Constants.EDIT,
       label: <ButtonItem type="link">Edit</ButtonItem>,
-      icon: <EditOutlinedIcon />,
-      onClick: open
+      icon: <EditOutlinedIcon />
     },
     {
-      key: 'delete',
+      key: Constants.DELETE,
       label: <ButtonItem type="link">Delete</ButtonItem>,
       icon: <DeleteOutlinedIcon />
     }
@@ -56,12 +60,12 @@ const List = ({ users, ...props }: ListProps) => {
           sorter: (a, b) => a.organization.localeCompare(b.organization)
         },
         {
-          title: 'Manager',
+          title: 'Leader',
           render(value, project) {
             return (
               <span>
                 {users.find((user) => user.id === project.personId)?.name ||
-                  '未知'}
+                  'Unknown'}
               </span>
             );
           }
@@ -82,7 +86,20 @@ const List = ({ users, ...props }: ListProps) => {
           render(value, project) {
             return (
               <Dropdown
-                overlay={<Menu items={menuItems} />}
+                overlay={
+                  <Menu
+                    onClick={(e) => {
+                      switch (e.key) {
+                        case Constants.EDIT:
+                          startEdit(project.id);
+                          break;
+                        case Constants.DELETE:
+                          break;
+                      }
+                    }}
+                    items={menuItems}
+                  />
+                }
                 trigger={['click']}
               >
                 <MoreOutlinedIcon />

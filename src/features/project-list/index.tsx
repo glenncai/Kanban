@@ -3,6 +3,7 @@ import SearchPanel from './components/SearchPanel';
 import List from './components/List';
 import styled from '@emotion/styled';
 import { Button, Typography } from 'antd';
+import { ErrorBox } from 'components/ErrorBox';
 import { Row } from 'lib/custom';
 import { useProjects } from 'utils/project';
 import { useUsers } from 'utils/user';
@@ -15,12 +16,7 @@ const ProjectList = () => {
 
   const { open } = useProjectModal();
   const [param, setParam] = useProjectSearchParams();
-  const {
-    data: list,
-    error,
-    isLoading,
-    retry
-  } = useProjects(useDebounce(param, 500));
+  const { data: list, error, isLoading } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
 
   return (
@@ -28,17 +24,10 @@ const ProjectList = () => {
       <Typography.Title level={2}>Project Lists</Typography.Title>
       <Row between={true} marginBottom={2}>
         <SearchPanel users={users || []} param={param} setParam={setParam} />
-        {error ? (
-          <Typography.Text type="danger">{error.message}</Typography.Text>
-        ) : null}
+        {error ? <ErrorBox error={error} type={'TEXT'} /> : null}
         <Button onClick={open}>Create New Project</Button>
       </Row>
-      <List
-        refresh={retry}
-        users={users || []}
-        dataSource={list || []}
-        loading={isLoading}
-      />
+      <List users={users || []} dataSource={list || []} loading={isLoading} />
     </Container>
   );
 };
