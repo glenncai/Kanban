@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Typography } from 'antd';
+import { ErrorBox } from 'components/ErrorBox';
 import errorLogo from 'assets/error.svg';
 import { DevTools } from 'jira-dev-tool';
 
@@ -8,9 +8,7 @@ export const FallbackError = ({ error }: { error: Error | null }) => {
     <Container>
       <DevTools />
       <ErrorIcon />
-      <Typography.Title level={3} type="danger">
-        {error?.message}
-      </Typography.Title>
+      <ErrorBox error={error} type={'TITLE'}></ErrorBox>
     </Container>
   );
 };
