@@ -1,8 +1,8 @@
 import { useHttp } from 'hooks/useHttp';
+import { useOptimistic } from 'hooks/useOptimistic';
 import { Project } from 'types/project';
 import { cleanObject } from 'utils';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useProjectSearchParams } from 'features/project-list/hooks/useProjectSearchParams';
+import { useMutation, useQuery, QueryKey } from 'react-query';
 
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
@@ -11,50 +11,51 @@ export const useProjects = (param?: Partial<Project>) => {
   );
 };
 
-export const useEditProject = () => {
+export const useEditProject = (queryKey: QueryKey) => {
   const client = useHttp();
-  const queryClient = useQueryClient();
-  const [searchParams] = useProjectSearchParams();
-  const queryKey = ['projects', searchParams];
   return useMutation(
     (params: Partial<Project>) =>
       client(`projects/${params.id}`, {
         method: 'PATCH',
         data: params
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries('projects'),
-      async onMutate(target) {
-        const previousItems = queryClient.getQueriesData(queryKey);
-        queryClient.setQueryData(queryKey, (old?: Project[]) => {
-          return (
-            old?.map((project) =>
-              project.id === target.id ? { ...project, ...target } : project
-            ) || []
-          );
-        });
-        return { previousItems };
-      },
-      onError(error, newItem, context) {
-        queryClient.setQueryData(queryKey, context?.previousItems);
-      }
-    }
+    useOptimistic<Project>({
+      queryKey,
+      callback: (target, old) =>
+        old?.map((item) =>
+          item.id === target.id ? { ...item, ...target } : item
+        ) || []
+    })
   );
 };
 
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
   const client = useHttp();
-  const queryClient = useQueryClient();
-
   return useMutation(
     (params: Partial<Project>) =>
       client(`projects`, {
         data: params,
         method: 'POST'
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries('projects')
-    }
+    useOptimistic<unknown>({
+      queryKey,
+      callback: (target, old) => (old ? [...old, target] : [])
+    })
+  );
+};
+
+export const useDeleteProject = (queryKey: QueryKey) => {
+  const client = useHttp();
+  return useMutation(
+    ({ id }: { id: number }) =>
+      client(`projects/${id}`, {
+        method: 'DELETE'
+      }),
+    useOptimistic<Project>({
+      queryKey,
+      callback: (target, old) =>
+        old?.filter((item) => item.id !== target.id) || []
+    })
   );
 };
 

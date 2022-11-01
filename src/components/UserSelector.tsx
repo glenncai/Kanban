@@ -7,5 +7,7 @@ export const UserSelector = (
 ) => {
   const { data: users } = useUsers();
 
+  console.log(users);
+
   return <IdSelector options={users || []} {...props} />;
 };

@@ -7,6 +7,7 @@ import { AuthForm } from 'types/auth';
 import { useAsync } from 'hooks/useAsync';
 import { Loading } from 'components/Loading';
 import { FallbackError } from 'components/FallbackError';
+import { useQueryClient } from 'react-query';
 
 const bootstrapUser = async () => {
   let user = null;
@@ -39,10 +40,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     run,
     setData: setUser
   } = useAsync<User | null>();
+  const queryClient = useQueryClient();
 
   const login = (form: AuthForm) => auth.login(form).then(setUser);
   const register = (format: AuthForm) => auth.register(format).then(setUser);
-  const logout = () => auth.logout().then(() => setUser(null));
+  const logout = () =>
+    auth.logout().then(() => {
+      setUser(null);
+      queryClient.clear();
+    });
 
   useEffect(() => {
     run(bootstrapUser());

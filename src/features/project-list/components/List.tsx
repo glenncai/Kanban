@@ -7,10 +7,11 @@ import { Pin } from 'components/Pin';
 import { useEditProject } from 'utils/project';
 import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
 import { useProjectModal } from '../hooks/useProjectModal';
+import { useProjectQueryKey } from '../hooks/useProjectQueryKey';
 import type { MenuProps } from 'antd';
 
 const List = ({ users, ...props }: ListProps) => {
-  const { mutate } = useEditProject();
+  const { mutate } = useEditProject(useProjectQueryKey());
   const { startEdit } = useProjectModal();
   const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
 

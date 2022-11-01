@@ -4,6 +4,7 @@ import { Loading } from 'components/Loading';
 import { UserSelector } from 'components/UserSelector';
 import { ErrorBox } from 'components/ErrorBox';
 import { useProjectModal } from 'features/project-list/hooks/useProjectModal';
+import { useProjectQueryKey } from 'features/project-list/hooks/useProjectQueryKey';
 import { useAddProject, useEditProject } from 'utils/project';
 import { useEffect } from 'react';
 
@@ -12,7 +13,11 @@ export const ProjectModal = () => {
   const { projectModalOpen, close, editingProject, isLoading } =
     useProjectModal();
   const useMutateProject = editingProject ? useEditProject : useAddProject;
-  const { mutateAsync, error, isLoading: mutateLoading } = useMutateProject();
+  const {
+    mutateAsync,
+    error,
+    isLoading: mutateLoading
+  } = useMutateProject(useProjectQueryKey());
   const title = editingProject ? 'Edit Project' : 'Create New Project';
 
   const onFinish = (values: any) => {
